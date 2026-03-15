@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birkingdom - Content Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0f0f1a;
+            color: #e2e2f0;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            background: rgba(15,15,26,0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .logo { font-size: 1.5rem; font-weight: 700; }
+        .logo span { color: #a78bfa; }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(167,139,250,0.1);
+            border: 1px solid rgba(167,139,250,0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #c4b5fd;
+        }
+        .user-badge .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+        }
+
+        /* Main */
+        .main { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+
+        /* Step cards */
+        .step-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+        .step-card.active {
+            border-color: rgba(167,139,250,0.3);
+            background: rgba(167,139,250,0.03);
+        }
+        .step-card.done {
+            border-color: rgba(74,222,128,0.2);
+            background: rgba(74,222,128,0.02);
+        }
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .step-num {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(167,139,250,0.15);
+            color: #a78bfa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .step-card.done .step-num {
+            background: rgba(74,222,128,0.15);
+            color: #4ade80;
+        }
+        .step-title { font-size: 1.1rem; font-weight: 600; }
+        .step-desc { color: #888; font-size: 0.9rem; line-height: 1.5; margin-bottom: 16px; padding-left: 44px; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-left: 44px;
+        }
+        .btn-primary {
+            background: #a78bfa;
+            color: #0f0f1a;
+        }
+        .btn-primary:hover { background: #c4b5fd; }
+        .btn-primary:disabled {
+            background: rgba(167,139,250,0.3);
+            color: rgba(255,255,255,0.3);
+            cursor: not-allowed;
+        }
+        .btn-success {
+            background: #4ade80;
+            color: #0f0f1a;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #c4b5fd;
+        }
+
+        /* Creator info */
+        .creator-info {
+            margin-left: 44px;
+            padding: 16px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .creator-info.show { display: block; }
+        .creator-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.85rem;
+        }
+        .creator-row .label { color: #888; }
+        .creator-row .value { color: #c4b5fd; font-weight: 500; }
+
+        /* Video upload */
+        .upload-area {
+            margin-left: 44px;
+            border: 2px dashed rgba(167,139,250,0.2);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .upload-area.show { display: block; }
+        .upload-area:hover { border-color: rgba(167,139,250,0.5); background: rgba(167,139,250,0.03); }
+        .upload-area .icon { font-size: 2rem; margin-bottom: 8px; }
+        .upload-area .text { color: #888; font-size: 0.9rem; }
+        .upload-area .filename { color: #a78bfa; font-weight: 600; margin-top: 8px; }
+
+        /* Post settings */
+        .post-settings {
+            margin-left: 44px;
+            display: none;
+        }
+        .post-settings.show { display: block; }
+        .field { margin-bottom: 16px; }
+        .field label {
+            display: block;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 6px;
+        }
+        .field input, .field select, .field textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #e2e2f0;
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .field input:focus, .field select:focus, .field textarea:focus {
+            border-color: rgba(167,139,250,0.4);
+        }
+        .field textarea { resize: vertical; min-height: 60px; }
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        .toggle-row .label { font-size: 0.9rem; }
+        .toggle {
+            width: 44px; height: 24px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .toggle.on { background: #a78bfa; }
+        .toggle::after {
+            content: '';
+            width: 18px; height: 18px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.2s;
+        }
+        .toggle.on::after { transform: translateX(20px); }
+
+        /* Status */
+        .status-area {
+            margin-left: 44px;
+            padding: 16px;
+            border-radius: 10px;
+            display: none;
+            font-size: 0.9rem;
+        }
+        .status-area.show { display: block; }
+        .status-area.publishing {
+            background: rgba(167,139,250,0.1);
+            border: 1px solid rgba(167,139,250,0.2);
+            color: #c4b5fd;
+        }
+        .status-area.success {
+            background: rgba(74,222,128,0.1);
+            border: 1px solid rgba(74,222,128,0.2);
+            color: #4ade80;
+        }
+        .status-area.error {
+            background: rgba(248,113,113,0.1);
+            border: 1px solid rgba(248,113,113,0.2);
+            color: #f87171;
+        }
+
+        /* Consent modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: #1a1a2e;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 480px;
+            width: 90%;
+        }
+        .modal h3 { font-size: 1.1rem; margin-bottom: 12px; }
+        .modal p { color: #888; font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px; }
+        .modal .btn-group { display: flex; gap: 12px; }
+        .modal .btn { margin-left: 0; flex: 1; justify-content: center; }
+
+        /* Sandbox badge */
+        .sandbox-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(251,191,36,0.15);
+            border: 1px solid rgba(251,191,36,0.3);
+            color: #fbbf24;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">Bir<span>kingdom</span></div>
+    <div class="header-right">
+        <span class="sandbox-badge">SANDBOX</span>
+        <div class="user-badge" id="userBadge" style="display:none;">
+            <span class="dot"></span>
+            <span id="userNickname">Connected</span>
+        </div>
+    </div>
+</header>
+
+<div class="main">
+
+    <!-- Step 1: Connect TikTok -->
+    <div class="step-card active" id="step1">
+        <div class="step-header">
+            <div class="step-num">1</div>
+            <div class="step-title">Connect your TikTok account</div>
+        </div>
+        <p class="step-desc">Authorize Birkingdom to publish content on your behalf via TikTok Login Kit.</p>
+        <button class="btn btn-primary" id="btnConnect" onclick="connectTikTok()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm3.5 7.5h-2v4a1.5 1.5 0 01-3 0v-4h-2a.5.5 0 010-1h2V4.5a.5.5 0 011 0v2h2a.5.5 0 010 1z"/></svg>
+            Connect TikTok Account
+        </button>
+    </div>
+
+    <!-- Step 2: Creator Info -->
+    <div class="step-card" id="step2">
+        <div class="step-header">
+            <div class="step-num">2</div>
+            <div class="step-title">Creator information</div>
+        </div>
+        <p class="step-desc">Querying your TikTok account permissions and posting limits.</p>
+        <div class="creator-info" id="creatorInfo">
+            <div class="creator-row">
+                <span class="label">Nickname</span>
+                <span class="value" id="ciNickname">—</span>
+            </div>
+            <div class="creator-row">
+                <span class="label">Privacy options</span>
+                <span class="value" id="ciPrivacy">—</span>
+            </div>
+            <div class="creator-row">
+                <span class="label">Max video duration</span>
+                <span class="value" id="ciDuration">—</span>
+            </div>
+            <div class="creator-row">
+                <span class="label">Comment enabled</span>
+                <span class="value" id="ciComment">—</span>
+            </div>
+            <div class="creator-row">
+                <span class="label">Duet enabled</span>
+                <span class="value" id="ciDuet">—</span>
+            </div>
+            <div class="creator-row">
+                <span class="label">Stitch enabled</span>
+                <span class="value" id="ciStitch">—</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 3: Upload & Configure -->
+    <div class="step-card" id="step3">
+        <div class="step-header">
+            <div class="step-num">3</div>
+            <div class="step-title">Upload video & configure post</div>
+        </div>
+        <p class="step-desc">Select a video file and configure your post settings before publishing to TikTok.</p>
+
+        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+            <div class="icon">🎬</div>
+            <div class="text">Click to select a video file (MP4, H.264)</div>
+            <div class="filename" id="fileName"></div>
+        </div>
+        <input type="file" id="fileInput" accept="video/mp4" style="display:none;" onchange="handleFile(this)">
+
+        <div class="post-settings" id="postSettings">
+            <div class="field">
+                <label>Title / Caption</label>
+                <textarea id="postTitle" placeholder="Write a caption for your video... #hashtags @mentions"></textarea>
+            </div>
+            <div class="field">
+                <label>Privacy Level</label>
+                <select id="privacyLevel">
+                    <!-- Populated from creator_info -->
+                </select>
+            </div>
+            <div class="toggle-row">
+                <span class="label">Allow comments</span>
+                <div class="toggle on" id="toggleComment" onclick="toggleSwitch(this)"></div>
+            </div>
+            <div class="toggle-row">
+                <span class="label">Allow duet</span>
+                <div class="toggle on" id="toggleDuet" onclick="toggleSwitch(this)"></div>
+            </div>
+            <div class="toggle-row">
+                <span class="label">Allow stitch</span>
+                <div class="toggle on" id="toggleStitch" onclick="toggleSwitch(this)"></div>
+            </div>
+            <div style="margin-top: 20px;">
+                <button class="btn btn-primary" id="btnPublish" onclick="showConsent()">
+                    Publish to TikTok
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 4: Status -->
+    <div class="step-card" id="step4">
+        <div class="step-header">
+            <div class="step-num">4</div>
+            <div class="step-title">Publishing status</div>
+        </div>
+        <p class="step-desc">Track the status of your post after publishing.</p>
+        <div class="status-area" id="statusArea"></div>
+    </div>
+
+</div>
+
+<!-- Consent Modal -->
+<div class="modal-overlay" id="consentModal">
+    <div class="modal">
+        <h3>Confirm publishing to TikTok</h3>
+        <p>Your video will be uploaded and posted to your TikTok account. After publishing, it may take a few minutes for the content to process and become visible on your profile.</p>
+        <div class="btn-group">
+            <button class="btn btn-outline" onclick="hideConsent()">Cancel</button>
+            <button class="btn btn-primary" onclick="publishVideo()">Confirm & Publish</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== CONFIG ==========
+    const CLIENT_KEY = 'sbaws5r70jdq6ec3tn';
+    const REDIRECT_URI = 'https://aethnova.github.io/birkingdom/callback.html';
+    const SCOPE = 'user.info.basic,video.publish';
+
+    // ========== STATE ==========
+    let isConnected = false;
+    let selectedFile = null;
+    let creatorData = null;
+
+    // Check if returning from OAuth
+    window.addEventListener('DOMContentLoaded', () => {
+        const authCode = sessionStorage.getItem('tiktok_auth_code');
+        if (authCode) {
+            simulateConnected();
+        }
+    });
+
+    // ========== STEP 1: OAuth ==========
+    function connectTikTok() {
+        const csrfState = Math.random().toString(36).substring(2);
+        sessionStorage.setItem('tiktok_csrf', csrfState);
+
+        const authUrl = 'https://www.tiktok.com/v2/auth/authorize/' +
+            '?client_key=' + CLIENT_KEY +
+            '&scope=' + encodeURIComponent(SCOPE) +
+            '&response_type=code' +
+            '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
+            '&state=' + csrfState;
+
+        window.location.href = authUrl;
+    }
+
+    function simulateConnected() {
+        isConnected = true;
+
+        // Update step 1
+        document.getElementById('step1').classList.remove('active');
+        document.getElementById('step1').classList.add('done');
+        document.getElementById('btnConnect').innerHTML = '&#10003; Connected';
+        document.getElementById('btnConnect').disabled = true;
+        document.getElementById('btnConnect').classList.remove('btn-primary');
+        document.getElementById('btnConnect').classList.add('btn-success');
+
+        // Show user badge
+        document.getElementById('userBadge').style.display = 'flex';
+        document.getElementById('userNickname').textContent = 'Sandbox User';
+
+        // Activate step 2
+        document.getElementById('step2').classList.add('active');
+        simulateCreatorInfo();
+    }
+
+    // ========== STEP 2: Creator Info ==========
+    function simulateCreatorInfo() {
+        // In sandbox, we simulate the creator_info response
+        setTimeout(() => {
+            creatorData = {
+                nickname: 'Sandbox User',
+                privacy_level_options: ['SELF_ONLY', 'MUTUAL_FOLLOW_FRIENDS', 'FOLLOWER_OF_CREATOR'],
+                max_video_post_duration_sec: 600,
+                comment_disabled: false,
+                duet_disabled: false,
+                stitch_disabled: false
+            };
+
+            document.getElementById('ciNickname').textContent = creatorData.nickname;
+            document.getElementById('ciPrivacy').textContent = creatorData.privacy_level_options.join(', ');
+            document.getElementById('ciDuration').textContent = creatorData.max_video_post_duration_sec + 's';
+            document.getElementById('ciComment').textContent = creatorData.comment_disabled ? 'No' : 'Yes';
+            document.getElementById('ciDuet').textContent = creatorData.duet_disabled ? 'No' : 'Yes';
+            document.getElementById('ciStitch').textContent = creatorData.stitch_disabled ? 'No' : 'Yes';
+
+            document.getElementById('creatorInfo').classList.add('show');
+
+            // Populate privacy dropdown
+            const select = document.getElementById('privacyLevel');
+            select.innerHTML = '<option value="">Select privacy level</option>';
+            creatorData.privacy_level_options.forEach(opt => {
+                const o = document.createElement('option');
+                o.value = opt;
+                o.textContent = opt.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+                select.appendChild(o);
+            });
+
+            // Mark step 2 done, activate step 3
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step2').classList.add('done');
+            document.getElementById('step3').classList.add('active');
+            document.getElementById('uploadArea').classList.add('show');
+
+        }, 1200);
+    }
+
+    // ========== STEP 3: Upload & Configure ==========
+    function handleFile(input) {
+        if (input.files && input.files[0]) {
+            selectedFile = input.files[0];
+            document.getElementById('fileName').textContent = selectedFile.name + ' (' + (selectedFile.size / 1024 / 1024).toFixed(1) + ' MB)';
+            document.getElementById('postSettings').classList.add('show');
+        }
+    }
+
+    function toggleSwitch(el) {
+        el.classList.toggle('on');
+    }
+
+    // ========== CONSENT ==========
+    function showConsent() {
+        if (!selectedFile) { alert('Please select a video file first.'); return; }
+        if (!document.getElementById('privacyLevel').value) { alert('Please select a privacy level.'); return; }
+        document.getElementById('consentModal').classList.add('show');
+    }
+
+    function hideConsent() {
+        document.getElementById('consentModal').classList.remove('show');
+    }
+
+    // ========== STEP 4: Publish ==========
+    function publishVideo() {
+        hideConsent();
+
+        // Mark step 3 done, activate step 4
+        document.getElementById('step3').classList.remove('active');
+        document.getElementById('step3').classList.add('done');
+        document.getElementById('step4').classList.add('active');
+        document.getElementById('btnPublish').disabled = true;
+
+        const statusArea = document.getElementById('statusArea');
+        statusArea.className = 'status-area show publishing';
+        statusArea.innerHTML = '⏳ Initiating post via /v2/post/publish/video/init/ ...';
+
+        // Simulate the API flow
+        setTimeout(() => {
+            statusArea.innerHTML = '⏳ Uploading video to TikTok servers... (0%)';
+        }, 1500);
+
+        setTimeout(() => {
+            statusArea.innerHTML = '⏳ Uploading video to TikTok servers... (45%)';
+        }, 3000);
+
+        setTimeout(() => {
+            statusArea.innerHTML = '⏳ Uploading video to TikTok servers... (100%)';
+        }, 4500);
+
+        setTimeout(() => {
+            statusArea.innerHTML = '⏳ Polling publish/status/fetch — Processing...';
+        }, 6000);
+
+        setTimeout(() => {
+            statusArea.className = 'status-area show success';
+            statusArea.innerHTML = '✅ Video published successfully!<br><small style="color:#888;">Note: Content posted by unaudited clients is restricted to private (SELF_ONLY) viewing mode.</small>';
+
+            document.getElementById('step4').classList.remove('active');
+            document.getElementById('step4').classList.add('done');
+        }, 8000);
+    }
+</script>
+</body>
+</html>
