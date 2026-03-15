@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birkingdom - Content Publishing Platform</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #1a1a2e;
+            background: #fafafa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .hero {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 24px;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a3e 50%, #2d1b4e 100%);
+            color: #fff;
+        }
+        .hero-inner { max-width: 640px; }
+        .logo {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+        .logo span { color: #a78bfa; }
+        .tagline {
+            font-size: 1.2rem;
+            color: #c4b5fd;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+        .features {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 48px;
+        }
+        .feature {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 24px;
+            width: 180px;
+            text-align: center;
+        }
+        .feature-icon { font-size: 2rem; margin-bottom: 8px; }
+        .feature-label {
+            font-size: 0.9rem;
+            color: #d4d4ff;
+            font-weight: 500;
+        }
+        .cta {
+            display: inline-block;
+            background: #a78bfa;
+            color: #0f0f1a;
+            padding: 14px 36px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .cta:hover { background: #c4b5fd; }
+        footer {
+            background: #0f0f1a;
+            color: #888;
+            text-align: center;
+            padding: 24px;
+            font-size: 0.85rem;
+        }
+        footer a {
+            color: #a78bfa;
+            text-decoration: none;
+            margin: 0 12px;
+        }
+        footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-inner">
+            <div class="logo">Bir<span>kingdom</span></div>
+            <p class="tagline">A content management platform that helps creators publish and manage video content across social media — starting with TikTok.</p>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🎬</div>
+                    <div class="feature-label">Video Publishing</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-label">Content Dashboard</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔗</div>
+                    <div class="feature-label">TikTok Integration</div>
+                </div>
+            </div>
+            <a href="mailto:birkinworld@gmail.com" class="cta">Contact Us</a>
+        </div>
+    </div>
+    <footer>
+        &copy; 2026 Birkingdom &nbsp;|&nbsp;
+        <a href="terms.html">Terms of Service</a>
+        <a href="privacy.html">Privacy Policy</a>
+    </footer>
+</body>
+</html>
